@@ -1,0 +1,9 @@
+#content {
+    width: 90%;
+    height: 500px;
+    border: none;
+    padding: 5px;
+}
+#content:onfocus {
+    border: none;
+}
