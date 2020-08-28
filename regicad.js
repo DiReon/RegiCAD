@@ -17,7 +17,7 @@ var Variable = /** @class */ (function () {
 var evaluate = function (str) {
     var varsNames = vars.map(function (x) { return x.name; });
     console.log('String to evaluate: ', str); //Here need to brake string into array and check for every array element
-    var strArr = str.replace(/ /gi, '').split(/[\+\-\**\*\/]/gi);
+    var strArr = str.replace(/ |;/gi, '').split(/[\+\-\**\*\/]/gi);
     console.log("Array to evaluate: ", strArr);
     for (var i = 0; i < strArr.length + 1; i++) {
         var index = varsNames.indexOf(strArr[i]);
@@ -32,8 +32,8 @@ var evaluate = function (str) {
     return eval(str);
 };
 var createVariable = function (str) {
-    var name = str.replace(/ /gi, '').split('==')[0];
-    var exp = str.replace(/ /gi, '').split('==')[1];
+    var name = str.replace(/ |;|&nbsp/gi, '').split('<b>=</b>')[0];
+    var exp = str.replace(/ |;|&nbsp/gi, '').split('<b>=</b>')[1];
     var varsNames = vars.map(function (x) { return x.name; });
     if (varsNames.includes(name)) {
         var index = varsNames.indexOf(name);
@@ -46,12 +46,10 @@ var createVariable = function (str) {
 };
 var calculate = function () {
     vars = [];
-    var content = textElement.innerHTML.replace(/<\/div>|<br>/gi, '');
-    console.log("Content: ", content);
+    var content = textElement.innerHTML.replace(/<\/div>/gi, '');
     var contentArr = content.split('<div>');
     console.log(contentArr);
     var temp = [];
-    var i = 0;
     for (var line in contentArr) {
         temp.push(processLine(contentArr[line]));
     }
@@ -63,14 +61,14 @@ var calculate = function () {
 var processLine = function (line) {
     if (line.indexOf('=') === -1)
         return line;
-    if (line.includes('==')) {
-        console.log("This is vaariable declaration...");
+    if (line.replace(/;|&nbsp/gi, '').includes('<b>=</b>')) {
+        console.log("This is variable declaration...");
         var v = createVariable(line);
-        return "" + line;
+        return v.name + " <b>=</b> " + v.exp;
     }
     else {
         var lineArr = line.split('=');
-        console.log('lineArr[0]:', lineArr[0]);
+        console.log('This is equation, lineArr[0]:', lineArr[0]);
         return lineArr[0] + " = " + evaluate(lineArr[0]);
     }
 };
