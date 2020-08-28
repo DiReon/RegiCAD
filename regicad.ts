@@ -15,13 +15,19 @@ class Variable {
 
 const evaluate = (str: string) => {
     let varsNames = vars.map(x => x.name);
-    console.log('String to evaluate: ', str);
-    for (let i = 0; i <str.length; i++) {
-        let index = varsNames.indexOf(str[i]);
+    console.log('String to evaluate: ', str); //Here need to brake string into array and check for every array element
+    let strArr = str.replace(/ /gi, '').split(/[\+\-\**\*\/]/gi);
+    console.log("Array to evaluate: ", strArr);
+    
+    for (let i = 0; i <strArr.length+1; i++) {
+        
+        let index = varsNames.indexOf(strArr[i]);
+        console.log("Index: ", index, "i: ", i, "srtArr.length: ", strArr.length);
         
         if (index != -1) {
-            str = str.replace(str[i], `(${vars[index].exp})`);
-            // console.log(`Expression: ${str}`);
+            str = str.replace(strArr[i], `(${vars[index].exp})`).replace(/ /gi, '');
+            strArr = str.replace(/[\(\)]/gi, '').split(/[\+\-\**\*\/)\(\)]/gi);
+            console.log(`Expression: ${str}, strArr: ${strArr}`);
             i = -1;
         }
     }
@@ -29,17 +35,18 @@ const evaluate = (str: string) => {
 }
 
 const createVariable = (str: string) => {
-    let name = str.replace(/ /gi, '').split('=')[0];
-    let exp = str.replace(/ /gi, '').split('=')[1];
+    let name = str.replace(/ /gi, '').split('==')[0];
+    let exp = str.replace(/ /gi, '').split('==')[1];
     let varsNames = vars.map(x => x.name)
     if (varsNames.includes(name)) {
         let index = varsNames.indexOf(name);
-        vars[index].exp = exp;
+        vars.splice(index, 1);
     } 
-    else {
-        let v = new Variable(name, exp);
-        vars.push(v);
-    }
+    let v = new Variable(name, exp);
+    vars.push(v);
+    console.log(`Vars: ${vars.map(v => v.name +'=' + v.exp + '=' + v.result)}`);
+    return v;
+
 }
 
 const calculate = () => {
@@ -57,21 +64,18 @@ const calculate = () => {
     for (let line in temp) {
         textElement.innerHTML +=`<div>${temp[line]}</div>`
     }
-    console.log(`Vars: ${vars.map(v => v.name +'=' + v.exp + '=' + v.result)}`);
 }
 
 const processLine = (line:string) => {
     if (line.indexOf('=') === -1) return line
-    let lineArr = line.split('=');
-    if (lineArr[0].search(/[\+\-\*]/) === -1) {
-        console.log("не встречается плюс!");
-        
-        createVariable(line);
-        return line;
+    if (line.includes('==')) {
+        console.log("This is vaariable declaration...");
+        let v = createVariable(line);
+        return `${line}` ;
     }
     else {
+        let lineArr = line.split('=');
         console.log('lineArr[0]:', lineArr[0]);
-        
         return `${lineArr[0]} = ${evaluate(lineArr[0])}`;
     }
 }
@@ -80,7 +84,5 @@ let textElement = document.getElementById('content');
 const calcBtn = document.getElementById('calcBtn');
 calcBtn.addEventListener('click', calculate)
 textElement.addEventListener('keypress', (e) => {
-    console.log(e.keyCode);
-    
     if (e.keyCode == 10) calculate()
 })
