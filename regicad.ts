@@ -9,14 +9,14 @@ class Variable {
     }
     get result() {
         console.log("this.exp: ", this.exp)
-        return evaluate(this.exp);
+        return decimal(evaluate(this.exp), 4);
     }
 }
 
 const evaluate = (str: string) => {
     let varsNames = vars.map(x => x.name);
     console.log('String to evaluate: ', str); //Here need to brake string into array and check for every array element
-    let strArr = str.replace(/ |;/gi, '').split(/[\+\-\**\*\/]/gi);
+    let strArr = str.replace(/ |;/gi, '').split(/[\+\-\**\*\/\(\)]/gi);
     console.log("Array to evaluate: ", strArr);
     
     for (let i = 0; i <strArr.length+1; i++) {
@@ -31,7 +31,7 @@ const evaluate = (str: string) => {
             i = -1;
         }
     }
-    return eval(str);
+    return decimal(eval(str), 4);
 }
 
 const createVariable = (str: string) => {
@@ -77,6 +77,19 @@ const processLine = (line:string) => {
         return `${lineArr[0]} = ${evaluate(lineArr[0])}`;
     }
 }
+//12.7456
+//0.123456 = 0.123 j = 0
+//0.001234567 = 0.00123 j = 
+function decimal (num: number, k: number) {
+    if (num > 1000) return Math.round(num);
+    let numArr = num.toString().split('.');
+    if (numArr[1] == undefined) return num;
+    let i = numArr[0].length;
+    let j = numArr[1].length - (+numArr[1]).toString().length;
+    if (i > 1||undefined) return Math.round(num*(10**(k-i)))/(10**(k-i));
+    else return Math.round(num*(10**(k+j)))/(10**(k+j));
+    //num = Math.round(num*1000)/1000;        
+}
 
 let textElement = document.getElementById('content');
 const calcBtn = document.getElementById('calcBtn');
@@ -84,3 +97,7 @@ calcBtn.addEventListener('click', calculate)
 textElement.addEventListener('keypress', (e) => {
     if (e.keyCode == 10) calculate()
 })
+// Code breaks if there are () in equation
+// Need to round numbers
+
+console.log(+'01234');

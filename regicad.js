@@ -7,7 +7,7 @@ var Variable = /** @class */ (function () {
     Object.defineProperty(Variable.prototype, "result", {
         get: function () {
             console.log("this.exp: ", this.exp);
-            return evaluate(this.exp);
+            return decimal(evaluate(this.exp), 4);
         },
         enumerable: true,
         configurable: true
@@ -17,7 +17,7 @@ var Variable = /** @class */ (function () {
 var evaluate = function (str) {
     var varsNames = vars.map(function (x) { return x.name; });
     console.log('String to evaluate: ', str); //Here need to brake string into array and check for every array element
-    var strArr = str.replace(/ |;/gi, '').split(/[\+\-\**\*\/]/gi);
+    var strArr = str.replace(/ |;/gi, '').split(/[\+\-\**\*\/\(\)]/gi);
     console.log("Array to evaluate: ", strArr);
     for (var i = 0; i < strArr.length + 1; i++) {
         var index = varsNames.indexOf(strArr[i]);
@@ -29,7 +29,7 @@ var evaluate = function (str) {
             i = -1;
         }
     }
-    return eval(str);
+    return decimal(eval(str), 4);
 };
 var createVariable = function (str) {
     var name = str.replace(/ |;|&nbsp/gi, '').split('<b>=</b>')[0];
@@ -72,6 +72,23 @@ var processLine = function (line) {
         return lineArr[0] + " = " + evaluate(lineArr[0]);
     }
 };
+//12.7456
+//0.123456 = 0.123 j = 0
+//0.001234567 = 0.00123 j = 
+function decimal(num, k) {
+    if (num > 1000)
+        return Math.round(num);
+    var numArr = num.toString().split('.');
+    if (numArr[1] == undefined)
+        return num;
+    var i = numArr[0].length;
+    var j = numArr[1].length - (+numArr[1]).toString().length;
+    if (i > 1 || undefined)
+        return Math.round(num * (Math.pow(10, (k - i)))) / (Math.pow(10, (k - i)));
+    else
+        return Math.round(num * (Math.pow(10, (k + j)))) / (Math.pow(10, (k + j)));
+    //num = Math.round(num*1000)/1000;        
+}
 var textElement = document.getElementById('content');
 var calcBtn = document.getElementById('calcBtn');
 calcBtn.addEventListener('click', calculate);
@@ -79,3 +96,6 @@ textElement.addEventListener('keypress', function (e) {
     if (e.keyCode == 10)
         calculate();
 });
+// Code breaks if there are () in equation
+// Need to round numbers
+console.log(+'01234');
