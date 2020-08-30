@@ -8,3 +8,6 @@
 #content:onfocus {
     border: 1px solid aqua;
 }
+#precision {
+    width: 2rem;
+}

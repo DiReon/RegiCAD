@@ -7,7 +7,7 @@ var Variable = /** @class */ (function () {
     Object.defineProperty(Variable.prototype, "result", {
         get: function () {
             console.log("this.exp: ", this.exp);
-            return decimal(evaluate(this.exp), 4);
+            return regiRound(evaluate(this.exp), precision);
         },
         enumerable: true,
         configurable: true
@@ -16,6 +16,7 @@ var Variable = /** @class */ (function () {
 }());
 var evaluate = function (str) {
     var varsNames = vars.map(function (x) { return x.name; });
+    str = replaceByStars(str);
     console.log('String to evaluate: ', str); //Here need to brake string into array and check for every array element
     var strArr = str.replace(/ |;/gi, '').split(/[\+\-\**\*\/\(\)]/gi);
     console.log("Array to evaluate: ", strArr);
@@ -29,9 +30,11 @@ var evaluate = function (str) {
             i = -1;
         }
     }
-    return decimal(eval(str), 4);
+    console.log("String before eval: ", str, " precision: ", precision, "result: ", eval(str));
+    return regiRound(eval(str), precision);
 };
 var createVariable = function (str) {
+    str = replaceByStars(str);
     var name = str.replace(/ |;|&nbsp/gi, '').split('<b>=</b>')[0];
     var exp = str.replace(/ |;|&nbsp/gi, '').split('<b>=</b>')[1];
     var varsNames = vars.map(function (x) { return x.name; });
@@ -62,20 +65,17 @@ var processLine = function (line) {
     if (line.indexOf('=') === -1)
         return line;
     if (line.replace(/;|&nbsp/gi, '').includes('<b>=</b>')) {
-        console.log("This is variable declaration...");
+        console.log("This is variable declaration...:", line);
         var v = createVariable(line);
-        return v.name + " <b>=</b> " + v.exp;
+        return v.name + " <b>=</b> " + replaceStars(v.exp);
     }
     else {
         var lineArr = line.split('=');
         console.log('This is equation, lineArr[0]:', lineArr[0]);
-        return lineArr[0] + " = " + evaluate(lineArr[0]);
+        return replaceStars(lineArr[0]) + " = " + evaluate(lineArr[0]);
     }
 };
-//12.7456
-//0.123456 = 0.123 j = 0
-//0.001234567 = 0.00123 j = 
-function decimal(num, k) {
+function regiRound(num, k) {
     if (num > 1000)
         return Math.round(num);
     var numArr = num.toString().split('.');
@@ -87,15 +87,22 @@ function decimal(num, k) {
         return Math.round(num * (Math.pow(10, (k - i)))) / (Math.pow(10, (k - i)));
     else
         return Math.round(num * (Math.pow(10, (k + j)))) / (Math.pow(10, (k + j)));
-    //num = Math.round(num*1000)/1000;        
 }
+var replaceByStars = function (str) {
+    return str.replace(/\^/gi, '**').replace(/∙/gi, '*');
+};
+var replaceStars = function (str) {
+    return str.replace(/\*\*/gi, '^').replace(/\*/gi, '∙');
+};
 var textElement = document.getElementById('content');
+var precisionEl = document.getElementById('precision');
+var precision = +precisionEl.value;
+console.log(precision);
 var calcBtn = document.getElementById('calcBtn');
 calcBtn.addEventListener('click', calculate);
 textElement.addEventListener('keypress', function (e) {
     if (e.keyCode == 10)
         calculate();
 });
-// Code breaks if there are () in equation
-// Need to round numbers
-console.log(+'01234');
+precisionEl.addEventListener('change', calculate);
+//•

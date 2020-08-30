@@ -9,12 +9,13 @@ class Variable {
     }
     get result() {
         console.log("this.exp: ", this.exp)
-        return decimal(evaluate(this.exp), 4);
+        return regiRound(evaluate(this.exp), precision);
     }
 }
 
 const evaluate = (str: string) => {
     let varsNames = vars.map(x => x.name);
+    str = replaceByStars(str);
     console.log('String to evaluate: ', str); //Here need to brake string into array and check for every array element
     let strArr = str.replace(/ |;/gi, '').split(/[\+\-\**\*\/\(\)]/gi);
     console.log("Array to evaluate: ", strArr);
@@ -31,10 +32,13 @@ const evaluate = (str: string) => {
             i = -1;
         }
     }
-    return decimal(eval(str), 4);
+    console.log("String before eval: ", str, " precision: ", precision, "result: ", eval(str));
+    
+    return regiRound(eval(str), precision);
 }
 
 const createVariable = (str: string) => {
+    str = replaceByStars(str);
     let name = str.replace(/ |;|&nbsp/gi, '').split('<b>=</b>')[0];
     let exp = str.replace(/ |;|&nbsp/gi, '').split('<b>=</b>')[1];
     let varsNames = vars.map(x => x.name)
@@ -67,20 +71,18 @@ const calculate = () => {
 const processLine = (line:string) => {
     if (line.indexOf('=') === -1) return line
     if (line.replace(/;|&nbsp/gi, '').includes('<b>=</b>')) {
-        console.log("This is variable declaration...");
+        console.log("This is variable declaration...:", line);
         let v = createVariable(line);
-        return `${v.name} <b>=</b> ${v.exp}` ;
+        return `${v.name} <b>=</b> ${replaceStars(v.exp)}` ;
     }
     else {
         let lineArr = line.split('=');
         console.log('This is equation, lineArr[0]:', lineArr[0]);
-        return `${lineArr[0]} = ${evaluate(lineArr[0])}`;
+        return `${replaceStars(lineArr[0])} = ${evaluate(lineArr[0])}`;
     }
 }
-//12.7456
-//0.123456 = 0.123 j = 0
-//0.001234567 = 0.00123 j = 
-function decimal (num: number, k: number) {
+
+function regiRound (num: number, k: number) {
     if (num > 1000) return Math.round(num);
     let numArr = num.toString().split('.');
     if (numArr[1] == undefined) return num;
@@ -88,16 +90,26 @@ function decimal (num: number, k: number) {
     let j = numArr[1].length - (+numArr[1]).toString().length;
     if (i > 1||undefined) return Math.round(num*(10**(k-i)))/(10**(k-i));
     else return Math.round(num*(10**(k+j)))/(10**(k+j));
-    //num = Math.round(num*1000)/1000;        
+}
+
+const replaceByStars = (str: string) => {
+    return str.replace(/\^/gi, '**').replace(/∙/gi, '*');
+}
+
+const replaceStars = (str:string) => {
+    return str.replace(/\*\*/gi, '^').replace(/\*/gi, '∙');
 }
 
 let textElement = document.getElementById('content');
+let precisionEl = document.getElementById('precision');
+let precision = +precisionEl.value;
+console.log(precision);
+
 const calcBtn = document.getElementById('calcBtn');
 calcBtn.addEventListener('click', calculate)
 textElement.addEventListener('keypress', (e) => {
     if (e.keyCode == 10) calculate()
 })
-// Code breaks if there are () in equation
-// Need to round numbers
+precisionEl.addEventListener('change', calculate)
+//•
 
-console.log(+'01234');
