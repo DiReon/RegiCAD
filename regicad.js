@@ -1,4 +1,3 @@
-var vars = [];
 var Variable = /** @class */ (function () {
     function Variable(name, exp) {
         this.name = name;
@@ -51,7 +50,6 @@ var calculate = function () {
     vars = [];
     var content = textElement.innerHTML.replace(/<\/div>/gi, '');
     var contentArr = content.split('<div>');
-    console.log(contentArr);
     var temp = [];
     for (var line in contentArr) {
         temp.push(processLine(contentArr[line]));
@@ -94,15 +92,62 @@ var replaceByStars = function (str) {
 var replaceStars = function (str) {
     return str.replace(/\*\*/gi, '^').replace(/\*/gi, '∙');
 };
+var save = function () {
+    var newFilename = document.getElementById('filename').value;
+    localStorage.setItem(newFilename, textElement.innerHTML);
+    if (filelist.indexOf(newFilename) === -1) {
+        filelist.unshift(newFilename);
+        localStorage.setItem('RegiCADfiles', filelist.join());
+    }
+    updateFileList();
+};
+var deleteFile = function () {
+    var filename = selectFile.value;
+    console.log("selectFile.value: ", selectFile.value);
+    localStorage.removeItem(filename);
+    var index = filelist.indexOf(filename);
+    filelist.splice(index, 1);
+    console.log("Filelist: ", filelist);
+    localStorage.removeItem('RegiCADfiles');
+    localStorage.setItem('RegiCADfiles', filelist.join());
+    updateFileList();
+};
+var updateFileList = function () {
+    while (selectFile.children.length > 0)
+        selectFile.removeChild(selectFile.children[0]);
+    filelist.forEach(function (file) {
+        var option = document.createElement('option');
+        option.innerHTML = file;
+        selectFile.appendChild(option);
+    });
+};
+var loadFile = function () {
+    textElement.innerHTML = localStorage.getItem(selectFile.value);
+    document.getElementById('filename').value = selectFile.value;
+};
+var vars = [];
+var filelist = [];
+var regiFiles = localStorage.getItem('RegiCADfiles');
+if (regiFiles)
+    filelist = regiFiles.split(',');
 var textElement = document.getElementById('content');
 var precisionEl = document.getElementById('precision');
-var precision = +precisionEl.value;
-console.log(precision);
+var saveBtn = document.getElementById('saveBtn');
 var calcBtn = document.getElementById('calcBtn');
+var deleteBtn = document.getElementById('deleteBtn');
+var selectFile = document.getElementById('selectFile');
+var lastFile = filelist[0];
+if (lastFile) {
+    textElement.innerHTML = localStorage.getItem(lastFile);
+}
+updateFileList();
+var precision = +precisionEl.value;
 calcBtn.addEventListener('click', calculate);
 textElement.addEventListener('keypress', function (e) {
     if (e.keyCode == 10)
         calculate();
 });
 precisionEl.addEventListener('change', calculate);
-//•
+saveBtn.addEventListener('click', save);
+deleteBtn.addEventListener('click', deleteFile);
+selectFile.addEventListener('click', loadFile);

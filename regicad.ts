@@ -1,5 +1,3 @@
-let vars: Variable[] = [];
-
 class Variable {
     name: string;
     exp: string;
@@ -57,7 +55,6 @@ const calculate = () => {
     vars = [];
     let content = textElement.innerHTML.replace(/<\/div>/gi, '');
     let contentArr = content.split('<div>');
-    console.log(contentArr);
     let temp: string[] = [];
     for (let line in contentArr) {
         temp.push(processLine(contentArr[line]));
@@ -100,16 +97,65 @@ const replaceStars = (str:string) => {
     return str.replace(/\*\*/gi, '^').replace(/\*/gi, '∙');
 }
 
-let textElement = document.getElementById('content');
-let precisionEl = document.getElementById('precision');
-let precision = +precisionEl.value;
-console.log(precision);
+const save = () => {
+    let newFilename = document.getElementById('filename').value;
+    localStorage.setItem(newFilename, textElement.innerHTML);
+    if (filelist.indexOf(newFilename) ===-1) {
+        filelist.unshift(newFilename);
+        localStorage.setItem('RegiCADfiles', filelist.join());
+    }
+    updateFileList();
+}
 
+const deleteFile = () => {
+    let filename = selectFile.value;
+    console.log("selectFile.value: ", selectFile.value);
+    
+    localStorage.removeItem(filename);
+    let index = filelist.indexOf(filename);
+    filelist.splice(index, 1);
+    console.log("Filelist: ", filelist);
+    localStorage.removeItem('RegiCADfiles');
+    localStorage.setItem('RegiCADfiles', filelist.join());
+    updateFileList();
+}
+
+const updateFileList = () => {
+    while (selectFile.children.length>0) selectFile.removeChild(selectFile.children[0]);
+    filelist.forEach(file => {
+        let option = document.createElement('option');
+        option.innerHTML = file;
+        selectFile.appendChild(option);
+    });
+}
+
+const loadFile = () => {
+    textElement.innerHTML = localStorage.getItem(selectFile.value);
+    document.getElementById('filename').value = selectFile.value;
+}
+let vars: Variable[] = [];
+let filelist = [];
+let regiFiles = localStorage.getItem('RegiCADfiles');
+if (regiFiles) filelist = regiFiles.split(',');
+const textElement = document.getElementById('content');
+const precisionEl: HTMLInputElement = document.getElementById('precision');
+const saveBtn = document.getElementById('saveBtn');
 const calcBtn = document.getElementById('calcBtn');
+const deleteBtn = document.getElementById('deleteBtn');
+let selectFile = document.getElementById('selectFile');
+
+let lastFile = filelist[0];
+if (lastFile) {
+    textElement.innerHTML = localStorage.getItem(lastFile);
+}
+updateFileList();
+
+let precision = +precisionEl.value;
 calcBtn.addEventListener('click', calculate)
 textElement.addEventListener('keypress', (e) => {
     if (e.keyCode == 10) calculate()
 })
 precisionEl.addEventListener('change', calculate)
-//•
-
+saveBtn.addEventListener('click', save)
+deleteBtn.addEventListener('click', deleteFile)
+selectFile.addEventListener('click', loadFile)
