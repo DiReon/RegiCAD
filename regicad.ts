@@ -1,3 +1,4 @@
+'use strict'
 const pattern_1 = / |;|&nbsp|<([^>]+)>/gi
 const pattern_2 = /[\+\-\**\*\/)\(\)]/gi
 
@@ -19,7 +20,8 @@ class Variable {
 }
 
 const evaluate = (str: string) => {
-    console.log(str);
+    precision = +precisionEl['value'];
+    console.log(`precision:  ${precision}`);
     
     let varsNames = vars.map(x => x.name);
     str = replaceByStars(str);
@@ -61,13 +63,16 @@ const calculate = () => {
         temp.push(processLine(contentArr[line]));
     }
     textElement.innerHTML = '';
+    console.log("Temp: ", temp);
+    
     for (let line in temp) {
-        textElement.innerHTML +=`<div>${temp[line]}</div>`;
+        if (temp[line] != '') textElement.innerHTML +=`<div>${temp[line]}</div>`;
     }
     save();
 }
 
 const processLine = (line:string) => {
+    
     if (line.indexOf('=') === -1) return line;
     let result ='';
     let comment = '';
@@ -136,27 +141,31 @@ const updateFileList = () => {
         option.innerHTML = file;
         selectFile.appendChild(option);
     });
+    loadFile();
 };
 
 const loadFile = () => {
-    let file: RegiFile;
     newFilename['value'] = selectFile['value'];
     let fileName = localStorage.getItem(selectFile['value']);
-    if (fileName) file = JSON.parse(fileName);
-    textElement.innerHTML = file.versions[0];
+    if (fileName) currentFile = JSON.parse(fileName);
+    textElement.innerHTML = currentFile.versions[0];
 }
 
 const checkBtnStatus = () => {
-    if (currentFile.thisRev >= currentFile.versions.length-1) undoBtn['disabled'] = true;
-    else undoBtn['disabled'] = false;
-    if (currentFile.thisRev <= 0) redoBtn['disabled'] = true;
-    else redoBtn['disabled'] = false;
+    if (currentFile.thisRev >= currentFile.versions.length-1) undoBtn.classList.add('disabled');
+    else undoBtn.classList.remove('disabled');
+    if (currentFile.thisRev <= 0) redoBtn.classList.add('disabled');
+    else redoBtn.classList.remove('disabled');
     textElement.focus();
     setEndOfContenteditable(textElement);
 }
 
 const changeVersion = (x: number) => {
+    if (x==1 && undoBtn.classList.contains("disabled")) return;
+    if (x==-1 && redoBtn.classList.contains("disabled")) return;
     currentFile.thisRev += x;
+    console.log("CurrentFile: ", currentFile.versions[currentFile.thisRev]);
+    
     textElement.innerHTML = currentFile.versions[currentFile.thisRev];
     checkBtnStatus();
     textElement.focus();
@@ -250,15 +259,13 @@ if (!regiFiles) localStorage.setItem(regiList, '');
 else filelist = regiFiles.split(',');
 //Initial file loading
 if (filelist[0]) {
-    console.log(localStorage.getItem(filelist[0]));
-    
     currentFile = JSON.parse(localStorage.getItem(filelist[0]));
     textElement.innerHTML = currentFile.versions[0];
     currentFile.thisRev = 0;
     newFilename['value'] = filelist[0];
     textElement.focus();
     setEndOfContenteditable(textElement);
-checkBtnStatus();
+    checkBtnStatus();
 }
 updateFileList();
 let precision = +precisionEl['value'];
@@ -295,9 +302,11 @@ selectFile.addEventListener('change', loadFile);
 // add automatic testing+
 // add option for comments on the same line +
 // add function for cleaning tags through regExp pattern+
-// add bootstrap
+// add bootstrap+
 // add undo and redo features +
 // make saving to localstorage through JSON format. +
 //improve security by removing all <>
 // add menu with greek and special symbols
 // add html Math representation
+//get rid of empty div in the beggining+
+// connect to firebase

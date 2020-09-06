@@ -1,3 +1,4 @@
+'use strict';
 var pattern_1 = / |;|&nbsp|<([^>]+)>/gi;
 var pattern_2 = /[\+\-\**\*\/)\(\)]/gi;
 var Variable = /** @class */ (function () {
@@ -15,7 +16,8 @@ var Variable = /** @class */ (function () {
     return Variable;
 }());
 var evaluate = function (str) {
-    console.log(str);
+    precision = +precisionEl['value'];
+    console.log("precision:  " + precision);
     var varsNames = vars.map(function (x) { return x.name; });
     str = replaceByStars(str);
     var strArr = str.split(pattern_2);
@@ -51,8 +53,10 @@ var calculate = function () {
         temp.push(processLine(contentArr[line]));
     }
     textElement.innerHTML = '';
+    console.log("Temp: ", temp);
     for (var line in temp) {
-        textElement.innerHTML += "<div>" + temp[line] + "</div>";
+        if (temp[line] != '')
+            textElement.innerHTML += "<div>" + temp[line] + "</div>";
     }
     save();
 };
@@ -130,29 +134,34 @@ var updateFileList = function () {
         option.innerHTML = file;
         selectFile.appendChild(option);
     });
+    loadFile();
 };
 var loadFile = function () {
-    var file;
     newFilename['value'] = selectFile['value'];
     var fileName = localStorage.getItem(selectFile['value']);
     if (fileName)
-        file = JSON.parse(fileName);
-    textElement.innerHTML = file.versions[0];
+        currentFile = JSON.parse(fileName);
+    textElement.innerHTML = currentFile.versions[0];
 };
 var checkBtnStatus = function () {
     if (currentFile.thisRev >= currentFile.versions.length - 1)
-        undoBtn['disabled'] = true;
+        undoBtn.classList.add('disabled');
     else
-        undoBtn['disabled'] = false;
+        undoBtn.classList.remove('disabled');
     if (currentFile.thisRev <= 0)
-        redoBtn['disabled'] = true;
+        redoBtn.classList.add('disabled');
     else
-        redoBtn['disabled'] = false;
+        redoBtn.classList.remove('disabled');
     textElement.focus();
     setEndOfContenteditable(textElement);
 };
 var changeVersion = function (x) {
+    if (x == 1 && undoBtn.classList.contains("disabled"))
+        return;
+    if (x == -1 && redoBtn.classList.contains("disabled"))
+        return;
     currentFile.thisRev += x;
+    console.log("CurrentFile: ", currentFile.versions[currentFile.thisRev]);
     textElement.innerHTML = currentFile.versions[currentFile.thisRev];
     checkBtnStatus();
     textElement.focus();
@@ -242,7 +251,6 @@ else
     filelist = regiFiles.split(',');
 //Initial file loading
 if (filelist[0]) {
-    console.log(localStorage.getItem(filelist[0]));
     currentFile = JSON.parse(localStorage.getItem(filelist[0]));
     textElement.innerHTML = currentFile.versions[0];
     currentFile.thisRev = 0;
@@ -265,25 +273,3 @@ newBtn.addEventListener('click', createFile);
 saveBtn.addEventListener('click', save);
 deleteBtn.addEventListener('click', deleteFile);
 selectFile.addEventListener('change', loadFile);
-//Test execution - uncomment this section for testing
-// newFilename['value'] = selectFile['value'] = 'Test 1';
-// for (let key in testdata_1.versions) {
-//     textElement.innerHTML = testdata_1.versions[key];
-//     calculate()
-//     textElement.innerHTML === testResult_1.versions[key] ? console.log("Passed"): console.log(`Test #${1+(+key)} Failed. Result: ${textElement.innerHTML}`);
-// }
-// for (let key in testdata_2.versions) {
-//     textElement.innerHTML = testdata_2.versions[key];
-//     calculate()
-//     textElement.innerHTML === testResult_2.versions[key] ? console.log("Passed"): console.log(`Test #${1+(+key)} Failed. Result: ${textElement.innerHTML}`);
-// }
-//Development plan
-// add automatic testing+
-// add option for comments on the same line +
-// add function for cleaning tags through regExp pattern+
-// add bootstrap
-// add undo and redo features +
-// make saving to localstorage through JSON format. +
-//improve security by removing all <>
-// add menu with greek and special symbols
-// add html Math representation

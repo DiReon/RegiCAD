@@ -5,20 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RegiCAD</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
-    <button id="undoBtn">Undo</button>
-    <button id="redoBtn">Redo</button>
-    <button id="new">New</button>
-    <button id="calcBtn">Calculate</button>
-    <button id="saveBtn">Save</button>
-    <button id="deleteBtn">Delete</button>
-    <input type="number" id="precision" value = "4">
-    <input type="text" id="filename" placeholder="Enter filename...">
-    <select name="selectFile" id="selectFile">
-        <option value="content">Or choose previously saved</option>
-    </select>
-    <div id="content" contenteditable autofocus></div>
+    <div class="navbar bg-dark">
+        <div class="container d-flex justify-content-between p-1">
+            <img id="undoBtn" class="btn btn-dark intLink" title="Back" src="assets/icons/undo icon icon.png"/>
+            <img id="redoBtn" class="btn btn-dark intLink" title="Forward" src="assets/icons/redo icon icon.png"/>
+            <img id="new" class="btn btn-dark intLink" title="New" src="assets/icons/new icon icon.png"/>
+            <img id="calcBtn" class="btn btn-dark intLink" title="Calculate" src="assets/icons/calculation, calculator, calc icon icon.png"/>
+            <img id="saveBtn" class="btn btn-dark intLink" title="Save" src="assets/icons/save icon icon.png"/>
+            <img id="deleteBtn" class="btn btn-dark intLink" title="Delete" src="assets/icons/Trash icon icon (1).png"/>
+            <div class="form-group form-row m-0">
+                <div class="col-1 mr-4">
+                    <input type="number" id="precision" value = "4" class="form-control" style="width: 4rem">
+                </div>
+                <div class="col">
+                    <input type="text" id="filename" placeholder="Enter filename..." class="form-control">
+                </div>
+                <div class="col">
+                    <select name="selectFile" id="selectFile" class="form-control">
+                        <option value="content">Or choose previously saved</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content" contenteditable autofocus class="form-control w-75 mx-auto mt-3"></div>
     <script src="regicad.js"></script>
 </body>
 </html>

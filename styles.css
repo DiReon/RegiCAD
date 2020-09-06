@@ -11,3 +11,5 @@
 #precision {
     width: 2rem;
 }
+.intLink { cursor: pointer; }
+.intLink .disabled {background-color: grey}
