@@ -132,6 +132,7 @@ const deleteFile = () => {
     localStorage.removeItem(regiList);
     localStorage.setItem(regiList, filelist.join());
     updateFileList();
+    if (filelist.length) loadFile();
 };
 
 const updateFileList = () => {
@@ -142,7 +143,6 @@ const updateFileList = () => {
         option.classList.add("dropdown-item");
         selectFile.appendChild(option);
     });
-    if (filelist.length) loadFile();
 };
 
 const loadFile = () => {
@@ -208,6 +208,7 @@ let vars: Variable[] = [];
 let filelist = [];
 let currentFile: RegiFile;
 let regiList = 'RegiCADfiles'; //set to RegiTestFiles for testing
+const help_demo = '{"versions":["<div>This is help file with demo calculation, showing the principle of RegiCAD usage.</div><div>RegiCAD divides data in 3 types:</div><div> - plain text. If there is no equal sign - that is a plain text.</div><div> - variables. If the line has equal and <b>the line is bold</b>, it is a variable, which can be used for calculation anywhere below that line.</div><div> - equations. Everything else is treated as equations. Whatever is after equal is replaced by the result of the equation before equal</div><div>To run the calculation press Ctrl+Enter or Calculator icon on the toolbar.</div><div>To set variable, highlight the whole line and press Ctrl+B to make it <b>bold</b></div><div>You can write comments on any line after the |. This might be useful for units in the calculations.</div><div><br></div><div>Change some value in below demo of the Mifflin St. Jeor Equation:</div><div><b><i>m = 75</i></b> | body mass, kg</div><div><b><i>h = 184</i></b> | height, cm</div><div><b><i>a = 31</i></b> |&nbsp;&nbsp;age, years</div><div><b><i>s = 5</i></b> | sex coefficient, 5 for male and -161 for female</div><div>Total heat production at complete rest:</div><div><b><i>P = (10∙m+6.25∙h-5∙a+s)</i></b></div><div><i>P = 1750</i></div><div><i><br></i></div><div>...or in loan calculation:</div><div><b><i>PV = 10000</i></b> | Present Value in USD</div><div><b><i>r = 0.05/12</i></b> | with rate of 5% per year, recalculated to rate per month</div><div><b><i>n = 5∙12</i></b> | for 5 years, 60 month</div><div><b><i>P = r∙PV/(1-(1+r)^(-n))</i></b></div><div><i>P = 188.7</i> | USD</div><div><br></div>"]}'
 //Test suit preparation - uncomment this section for testing
 const testdata_1 = {
 	versions: [
@@ -256,8 +257,13 @@ const testResult_2 = {
 
 //Execution
 let regiFiles = localStorage.getItem(regiList);
-if (!regiFiles) localStorage.setItem(regiList, '');
-else filelist = regiFiles.split(',');
+
+if (!regiFiles||regiFiles==null) {
+    regiFiles = 'Help and Demo,'
+    localStorage.setItem(regiList, regiFiles);
+    localStorage.setItem('Help and Demo', help_demo)
+}
+filelist = regiFiles.split(',');
 //Initial file loading
 if (filelist[0]) {
     currentFile = JSON.parse(localStorage.getItem(filelist[0]));
@@ -269,6 +275,7 @@ if (filelist[0]) {
     checkBtnStatus();
 }
 updateFileList();
+if (filelist.length) loadFile();
 let precision = +precisionEl['value'];
 calcBtn.addEventListener('click', calculate);
 textElement.addEventListener('keypress', (e) => {
