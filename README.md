@@ -12,4 +12,6 @@ To run the calculation press Ctrl+Enter or Calculator icon on the toolbar.
 To set variable, highlight the whole line and press Ctrl+B to make it bold
 You can write comments on any line after the |. This might be useful for units in the calculations.
 
-Play with demo https://regicad-40462.web.app/
+As this was initially Typescript exercise, no external libraries or frameworks are used. Only some Bootstrap for visualization.
+
+Here you can play with demo: https://regicad-40462.web.app/
