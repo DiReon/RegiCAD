@@ -13,3 +13,9 @@
 }
 .intLink { cursor: pointer; }
 .intLink .disabled {background-color: grey}
+.dropdown-item {
+    cursor: pointer;
+}
+#selectFile {
+    cursor: pointer;
+}

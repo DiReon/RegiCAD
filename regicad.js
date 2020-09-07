@@ -132,9 +132,11 @@ var updateFileList = function () {
     filelist.forEach(function (file) {
         var option = document.createElement('option');
         option.innerHTML = file;
+        option.classList.add("dropdown-item");
         selectFile.appendChild(option);
     });
-    loadFile();
+    if (filelist.length)
+        loadFile();
 };
 var loadFile = function () {
     newFilename['value'] = selectFile['value'];

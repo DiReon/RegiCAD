@@ -139,9 +139,10 @@ const updateFileList = () => {
     filelist.forEach(file => {
         let option = document.createElement('option');
         option.innerHTML = file;
+        option.classList.add("dropdown-item");
         selectFile.appendChild(option);
     });
-    loadFile();
+    if (filelist.length) loadFile();
 };
 
 const loadFile = () => {
