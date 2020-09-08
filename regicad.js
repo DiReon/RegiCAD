@@ -1,6 +1,7 @@
-'use strict';
-var pattern_1 = / |;|&nbsp|<([^>]+)>/gi;
-var pattern_2 = /[\+\-\**\*\/)\(\)]/gi;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.pattern_1 = / |;|&nbsp|<([^>]+)>/gi;
+exports.pattern_2 = /[\+\-\**\*\/)\(\)]/gi;
 var Variable = /** @class */ (function () {
     function Variable(name, exp) {
         this.name = name;
@@ -20,12 +21,12 @@ var evaluate = function (str) {
     console.log("precision:  " + precision);
     var varsNames = vars.map(function (x) { return x.name; });
     str = replaceByStars(str);
-    var strArr = str.split(pattern_2);
+    var strArr = str.split(exports.pattern_2);
     for (var i = 0; i < strArr.length + 1; i++) {
         var index = varsNames.indexOf(strArr[i]);
         if (index != -1) {
             str = str.replace(strArr[i], "(" + vars[index].exp + ")").replace(/ /gi, '');
-            strArr = str.replace(/[\(\)]/gi, '').split(pattern_2);
+            strArr = str.replace(/[\(\)]/gi, '').split(exports.pattern_2);
             i = -1;
         }
     }
@@ -33,7 +34,7 @@ var evaluate = function (str) {
     return regiRound(eval(str), precision);
 };
 var createVariable = function (str) {
-    str = replaceByStars(str).replace(pattern_1, '');
+    str = replaceByStars(str).replace(exports.pattern_1, '');
     var _a = str.split('='), name = _a[0], exp = _a[1];
     var varsNames = vars.map(function (x) { return x.name; });
     if (varsNames.includes(name)) {
@@ -75,7 +76,7 @@ var processLine = function (line) {
         result = "<b><i>" + v.name + " = " + replaceStars(v.exp) + "</i></b>";
     }
     else {
-        var lineArr = line.replace(pattern_1, '').split('=');
+        var lineArr = line.replace(exports.pattern_1, '').split('=');
         result = "<i>" + replaceStars(lineArr[0]) + " = " + evaluate(lineArr[0]) + "</i>";
     }
     return result + comment;
@@ -293,3 +294,27 @@ saveBtn.addEventListener('click', save);
 boldBtn.addEventListener('click', makeBold);
 deleteBtn.addEventListener('click', deleteFile);
 selectFile.addEventListener('change', loadFile);
+//Test execution - uncomment this section for testing
+// newFilename['value'] = selectFile['value'] = 'Test 1';
+// for (let key in testdata_1.versions) {
+//     textElement.innerHTML = testdata_1.versions[key];
+//     calculate()
+//     textElement.innerHTML === testResult_1.versions[key] ? console.log("Passed"): console.log(`Test #${1+(+key)} Failed. Result: ${textElement.innerHTML}`);
+// }
+// for (let key in testdata_2.versions) {
+//     textElement.innerHTML = testdata_2.versions[key];
+//     calculate()
+//     textElement.innerHTML === testResult_2.versions[key] ? console.log("Passed"): console.log(`Test #${1+(+key)} Failed. Result: ${textElement.innerHTML}`);
+// }
+//Development plan
+// add automatic testing+
+// add option for comments on the same line +
+// add function for cleaning tags through regExp pattern+
+// add bootstrap+
+// add undo and redo features +
+// make saving to localstorage through JSON format. +
+//improve security by removing all <>
+// add menu with greek and special symbols
+// add html Math representation
+//get rid of empty div in the beggining+
+// connect to firebase+

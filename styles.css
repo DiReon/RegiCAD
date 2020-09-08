@@ -13,8 +13,8 @@
 }
 .intLink { 
     cursor: pointer;
-    height: 40px;
-    width: 52px;
+    height: 36px;
+    width: 48px;
 }
 .intLink .disabled {background-color: grey}
 .dropdown-item {

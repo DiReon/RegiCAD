@@ -10,16 +10,13 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark pl-1 pr-1">
         <ul class="nav justify-content-center">
             <li class="nav-item active">
                 <img id="undoBtn" class="btn btn-dark intLink" title="Back" src="assets/icons/undo icon icon.png"/>
             </li>
             <li class="nav-item">
                 <img id="redoBtn" class="btn btn-dark intLink" title="Forward" src="assets/icons/redo icon icon.png"/>
-            </li>
-            <li class="nav-item">
-                <img id="new" class="btn btn-dark intLink" title="New" src="assets/icons/new icon icon.png"/>
             </li>
             <li class="nav-item">
                 <img id="calcBtn" class="btn btn-dark intLink" title="Calculate" src="assets/icons/calculation, calculator, calc icon icon.png"/>
@@ -30,11 +27,16 @@
             <li class="nav-item">
                 <img id="boldBtn" alt="" class="btn btn-dark intLink p-0" title="Toggle bold format" src="assets/icons/Text Bold icon icon.png">
             </li>
-            <li class="nav-item">
-                <img id="deleteBtn" class="btn btn-dark intLink" title="Delete" src="assets/icons/Trash Empty icon icon.png"/>
-            </li>
         </ul>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <img id="new" class="btn btn-dark intLink" title="New" src="assets/icons/new icon icon.png"/>
+                </li>
+                <li class="nav-item">
+                    <img id="deleteBtn" class="btn btn-dark intLink" title="Delete" src="assets/icons/Trash Empty icon icon.png"/>
+                </li>
+            </ul>
             <form class="form-inline my-2 my-lg-0">
                 <input type="number" id="precision" value = "4" class="form-control mr-sm-2" style="width: 4rem">
                 <input type="text" id="filename" placeholder="Enter filename..." class="form-control mr-sm-2">
@@ -48,7 +50,7 @@
         </button>
     </nav>
     <div id="content" contenteditable autofocus class="form-control w-75 mx-auto mt-3"></div>
-    
+    <script>var exports = {};</script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="assets/dist/js/bootstrap.bundle.min.js"></script>
     
