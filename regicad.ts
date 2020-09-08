@@ -108,6 +108,17 @@ const replaceStars = (str:string) => {
     return str.replace(/\*\*/gi, '^').replace(/\*/gi, '∙');
 }
 
+const makeBold = () => {
+    document.execCommand('bold', false)
+    //below code does not remove <b> tags, and I have to use execCommand above.
+    // let targetText = window.getSelection().toString();
+    // let newText: string;
+    // console.log("Selected text:", targetText);
+    // let isBold = targetText.match(/<b>.*<\/b>/);
+    // isBold ? newText = targetText.replace(/<b>|<\/b>/gi, '') : newText = `<b>${targetText}</b>`;
+    // textElement.innerHTML = textElement.innerHTML.replace(targetText, `<b>${newText}</b>`);
+}
+
 const save = () => {
     if (!currentFile) currentFile = {versions: [], thisRev: 0};
     if (currentFile.versions[0] == textElement.innerHTML) return;
@@ -199,6 +210,7 @@ const undoBtn = document.getElementById('undoBtn');
 const redoBtn = document.getElementById('redoBtn');
 const newBtn = document.getElementById('new');
 const saveBtn = document.getElementById('saveBtn');
+const boldBtn = document.getElementById('boldBtn');
 const calcBtn = document.getElementById('calcBtn');
 const deleteBtn = document.getElementById('deleteBtn');
 let selectFile = document.getElementById('selectFile');
@@ -259,6 +271,8 @@ const testResult_2 = {
 let regiFiles = localStorage.getItem(regiList);
 
 if (!regiFiles||regiFiles==null) {
+    console.log('No RegiCADfiles found in localStorage. Creating Help and Demo...');
+    
     regiFiles = 'Help and Demo,'
     localStorage.setItem(regiList, regiFiles);
     localStorage.setItem('Help and Demo', help_demo)
@@ -286,6 +300,7 @@ undoBtn.addEventListener('click', () => changeVersion(1));
 redoBtn.addEventListener('click', () => changeVersion(-1));
 newBtn.addEventListener('click', createFile)
 saveBtn.addEventListener('click', save);
+boldBtn.addEventListener('click', makeBold);
 deleteBtn.addEventListener('click', deleteFile);
 selectFile.addEventListener('change', loadFile);
 
@@ -317,4 +332,4 @@ selectFile.addEventListener('change', loadFile);
 // add menu with greek and special symbols
 // add html Math representation
 //get rid of empty div in the beggining+
-// connect to firebase
+// connect to firebase+

@@ -99,6 +99,16 @@ var replaceByStars = function (str) {
 var replaceStars = function (str) {
     return str.replace(/\*\*/gi, '^').replace(/\*/gi, '∙');
 };
+var makeBold = function () {
+    document.execCommand('bold', false);
+    //below code does not remove <b> tags, and I have to use execCommand above.
+    // let targetText = window.getSelection().toString();
+    // let newText: string;
+    // console.log("Selected text:", targetText);
+    // let isBold = targetText.match(/<b>.*<\/b>/);
+    // isBold ? newText = targetText.replace(/<b>|<\/b>/gi, '') : newText = `<b>${targetText}</b>`;
+    // textElement.innerHTML = textElement.innerHTML.replace(targetText, `<b>${newText}</b>`);
+};
 var save = function () {
     if (!currentFile)
         currentFile = { versions: [], thisRev: 0 };
@@ -192,6 +202,7 @@ var undoBtn = document.getElementById('undoBtn');
 var redoBtn = document.getElementById('redoBtn');
 var newBtn = document.getElementById('new');
 var saveBtn = document.getElementById('saveBtn');
+var boldBtn = document.getElementById('boldBtn');
 var calcBtn = document.getElementById('calcBtn');
 var deleteBtn = document.getElementById('deleteBtn');
 var selectFile = document.getElementById('selectFile');
@@ -249,6 +260,7 @@ var testResult_2 = {
 //Execution
 var regiFiles = localStorage.getItem(regiList);
 if (!regiFiles || regiFiles == null) {
+    console.log('No RegiCADfiles found in localStorage. Creating Help and Demo...');
     regiFiles = 'Help and Demo,';
     localStorage.setItem(regiList, regiFiles);
     localStorage.setItem('Help and Demo', help_demo);
@@ -278,5 +290,6 @@ undoBtn.addEventListener('click', function () { return changeVersion(1); });
 redoBtn.addEventListener('click', function () { return changeVersion(-1); });
 newBtn.addEventListener('click', createFile);
 saveBtn.addEventListener('click', save);
+boldBtn.addEventListener('click', makeBold);
 deleteBtn.addEventListener('click', deleteFile);
 selectFile.addEventListener('change', loadFile);

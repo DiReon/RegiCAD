@@ -10,13 +10,8 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <ul class="nav justify-content-center">
             <li class="nav-item active">
                 <img id="undoBtn" class="btn btn-dark intLink" title="Back" src="assets/icons/undo icon icon.png"/>
             </li>
@@ -33,17 +28,24 @@
                 <img id="saveBtn" class="btn btn-dark intLink" title="Save" src="assets/icons/save icon icon.png"/>
             </li>
             <li class="nav-item">
-                <img id="deleteBtn" class="btn btn-dark intLink" title="Delete" src="assets/icons/Trash icon icon (1).png"/>
+                <img id="boldBtn" alt="" class="btn btn-dark intLink p-0" title="Toggle bold format" src="assets/icons/Text Bold icon icon.png">
             </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input type="number" id="precision" value = "4" class="form-control mr-sm-2" style="width: 4rem">
-            <input type="text" id="filename" placeholder="Enter filename..." class="form-control mr-sm-2">
-            <select name="selectFile" id="selectFile" class="form-control mr-sm-2">
-                <option value="content" class="dropdown-item">Or choose previously saved</option>
-            </select>
+            <li class="nav-item">
+                <img id="deleteBtn" class="btn btn-dark intLink" title="Delete" src="assets/icons/Trash Empty icon icon.png"/>
+            </li>
+        </ul>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="form-inline my-2 my-lg-0">
+                <input type="number" id="precision" value = "4" class="form-control mr-sm-2" style="width: 4rem">
+                <input type="text" id="filename" placeholder="Enter filename..." class="form-control mr-sm-2">
+                <select name="selectFile" id="selectFile" class="form-control mr-sm-2">
+                    <option value="content" class="dropdown-item">Or choose previously saved</option>
+                </select>
           </form>
         </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
     </nav>
     <div id="content" contenteditable autofocus class="form-control w-75 mx-auto mt-3"></div>
     
