@@ -36,7 +36,8 @@ const evaluate = (str: string) => {
     }
     console.log(str);
     
-    return regiRound(eval(str), precision);
+    // return regiRound(eval(str), precision);
+    return (eval(str)).toFixed(precision);
 }
 
 const createVariable = (str: string) => {
@@ -90,7 +91,6 @@ const processLine = (line:string) => {
 }
 
 function regiRound (num: number, k: number) {
-    if (num > 1000) return Math.round(num);
     let numArr = num.toString().split('.');
     if (numArr[1] == undefined) return num;
     let i = numArr[0].length;

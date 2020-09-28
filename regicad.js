@@ -31,7 +31,8 @@ var evaluate = function (str) {
         }
     }
     console.log(str);
-    return regiRound(eval(str), precision);
+    // return regiRound(eval(str), precision);
+    return (eval(str)).toFixed(precision);
 };
 var createVariable = function (str) {
     str = replaceByStars(str).replace(exports.pattern_1, '');
@@ -82,8 +83,6 @@ var processLine = function (line) {
     return result + comment;
 };
 function regiRound(num, k) {
-    if (num > 1000)
-        return Math.round(num);
     var numArr = num.toString().split('.');
     if (numArr[1] == undefined)
         return num;
@@ -213,51 +212,6 @@ var filelist = [];
 var currentFile;
 var regiList = 'RegiCADfiles'; //set to RegiTestFiles for testing
 var help_demo = '{"versions":["<div>This is help file with demo calculation, showing the principle of RegiCAD usage.</div><div>RegiCAD divides data in 3 types:</div><div> - plain text. If there is no equal sign - that is a plain text.</div><div> - variables. If the line has equal and <b>the line is bold</b>, it is a variable, which can be used for calculation anywhere below that line.</div><div> - equations. Everything else is treated as equations. Whatever is after equal is replaced by the result of the equation before equal</div><div>To run the calculation press Ctrl+Enter or Calculator icon on the toolbar.</div><div>To set variable, highlight the whole line and press Ctrl+B to make it <b>bold</b></div><div>You can write comments on any line after the |. This might be useful for units in the calculations.</div><div><br></div><div>Change some value in below demo of the Mifflin St. Jeor Equation:</div><div><b><i>m = 75</i></b> | body mass, kg</div><div><b><i>h = 184</i></b> | height, cm</div><div><b><i>a = 31</i></b> |&nbsp;&nbsp;age, years</div><div><b><i>s = 5</i></b> | sex coefficient, 5 for male and -161 for female</div><div>Total heat production at complete rest:</div><div><b><i>P = (10∙m+6.25∙h-5∙a+s)</i></b></div><div><i>P = 1750</i></div><div><i><br></i></div><div>...or in loan calculation:</div><div><b><i>PV = 10000</i></b> | Present Value in USD</div><div><b><i>r = 0.05/12</i></b> | with rate of 5% per year, recalculated to rate per month</div><div><b><i>n = 5∙12</i></b> | for 5 years, 60 month</div><div><b><i>P = r∙PV/(1-(1+r)^(-n))</i></b></div><div><i>P = 188.7</i> | USD</div><div><br></div>"]}';
-//Test suit preparation - uncomment this section for testing
-var testdata_1 = {
-    versions: [
-        "<div>1+2+3+4+5=</div>",
-        "<div>1+2+3+4=</div>",
-        "<div>1+2+3=</div>",
-        "<div>1+2=</div>",
-    ],
-};
-var testResult_1 = {
-    versions: [
-        "<div></div><div><i>1+2+3+4+5 = 15</i></div>",
-        "<div></div><div><i>1+2+3+4 = 10</i></div>",
-        "<div></div><div><i>1+2+3 = 6</i></div>",
-        "<div></div><div><i>1+2 = 3</i></div>",
-    ],
-};
-var testdata_2 = {
-    versions: [
-        "<div>1+2=</div>",
-        "<div>2*3=</div>",
-        "<div>(1+2)^3-(4*5)/6=</div>",
-        "<div>abc<b>=</b>12.3</div><div>def<b>=</b>45.6</div><div>abc+def=</div>",
-        "<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Расчет депрессии при открытии скважины Хазри-2 объект 4</div><div>ρ&nbsp;<b>=</b>&nbsp;1.2</div><div>Глубина верха интервала перфорации:</div><div>Интервал_верх&nbsp;<b>=</b>&nbsp;4407</div><div><br></div><div>Давление гидростатики на глубине верха интервала:</div><div>Ph&nbsp;<b>=</b>&nbsp;ρ*Интервал_верх*1.423</div><div>Ph = 7525</div><div><br></div><div>Пластовое давление:</div><div>Pf&nbsp;<b>=</b>&nbsp;47.24*145</div><div>Pf = 6850</div><div><br></div><div>После замещения необходимо стравить давление на устье для депрессии 10 МПа:</div><div>Ph - Pf + 10*145 = 2126</div><div>В МПа:</div><div>(Ph - Pf)/145 + 10 = 14.7</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Расчет объема замещения</div><div>Внутренний объем НКТ на 1 м:</div><div>0.063**2*0.785 = 0</div><div>Объем вытеснения при замещении на 300 м выше IRDV:</div><div>4177-300 = 3877</div><div>3877*0.003115 = 12.1</div><div>0.5*0.55 = 0.28</div>",
-        "<div></div><div></div><div></div><div></div><div></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Volume calculations Khazri-2 zone 4</div><div>Liner_ID <b>=</b> 0.1524</div><div>Casing1_ID <b>=</b> 0.2262</div><div>Casing2_ID <b>=</b> 0.2168</div><div>Casing3_ID <b>=</b> 0.219</div><div>Packer_depth <b>=</b> 4778</div><div>Tubing_OD <b>=</b> 0.0889</div><div>Tubing_ID <b>=</b> 0.063</div><div>Well_volume <b>=</b> 0.785∙(Casing1_ID^2∙1098.19+Casing2_ID^2∙(3143.26-1098.19)+Casing3_ID^2∙(4221.24-3143.26)+Liner_ID^2∙(Packer_depth-4221.24))</div><div>Well_volume     = 170.3</div><div>Annulus_volume <b>=</b> Well_volume-0.785∙Tubing_OD^2∙Packer_depth</div><div>Annulus_volume    = 140.7</div><div>Tubing_volume <b>=</b> 0.785∙Tubing_ID^2∙Packer_depth</div><div>Tubing_volume    = 14.89</div><div><br></div>",
-        "<div>a<b>=</b><i>6+9</i></div>",
-        "<div></scalsmdlc>2+<ia>3+4</ia><ia>=</ia><iasd></iasd></div>",
-        "<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Volume calculations Khazri-2 zone 4</div><div><b><i>Liner_ID = 0.154</i></b> | mm</div><div><b><i>Liner_ID*2 = 0.308</i></b> | mm</div><div><i>My simple text</i></div><div>sjdcksdnknk</div><div><b><i>Casing1_ID = 0.2262</i></b> | mm</div><div><b><i>Casing2_ID = 0.2168</i></b> | mm</div><div><b><i>Casing3_ID = 0.219</i></b> | mm</div><div><b><i>Packer_depth = 4778</i></b> | m</div><div><b><i>Tubing_OD = 0.0889</i></b> |&nbsp; mm</div><div><b><i>Tubing_ID = 0.063</i></b> |&nbsp; &nbsp; mm</div><div><br></div><div><b><i>Well_volume = 0.785∙(Casing1_ID^2∙1098.19+Casing2_ID^2∙(3143.26-1098.19)+Casing3_ID^2∙(4221.24-3143.26)+Liner_ID^2∙(Packer_depth-4221.24))</i></b> |&nbsp; &nbsp; some comments here</div><div><br></div><div><i>Well_volume = 170.5</i> | m3</div><div><br></div><div><b><i>Annulus_volume = Well_volume-0.785∙Tubing_OD^2∙Packer_depth</i></b></div><div><br></div><div><i>Annulus_volume = 140.9</i> | any comments here</div><div><b><i>Tubing_volume = 0.785∙Tubing_ID^2∙Packer_depth</i></b></div><div><i>Tubing_volume = 14.89</i></div><div><br></div>",
-    ]
-};
-var testResult_2 = {
-    versions: [
-        "<div></div><div><i>1+2 = 3</i></div>",
-        "<div></div><div><i>2∙3 = 6</i></div>",
-        "<div></div><div><i>(1+2)^3-(4∙5)/6 = 23.67</i></div>",
-        "<div></div><div><b><i>abc = 12.3</i></b></div><div><b><i>def = 45.6</i></b></div><div><i>abc+def = 57.9</i></div>",
-        "<div></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Расчет депрессии при открытии скважины Хазри-2 объект 4</div><div><b><i>ρ = 1.2</i></b></div><div>Глубина верха интервала перфорации:</div><div><b><i>Интервал_верх = 4407</i></b></div><div><br></div><div>Давление гидростатики на глубине верха интервала:</div><div><b><i>Ph = ρ∙Интервал_верх∙1.423</i></b></div><div><i>Ph = 7525</i></div><div><br></div><div>Пластовое давление:</div><div><b><i>Pf = 47.24∙145</i></b></div><div><i>Pf = 6850</i></div><div><br></div><div>После замещения необходимо стравить давление на устье для депрессии 10 МПа:</div><div><i>Ph-Pf+10∙145 = 2126</i></div><div>В МПа:</div><div><i>(Ph-Pf)/145+10 = 14.66</i></div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Расчет объема замещения</div><div>Внутренний объем НКТ на 1 м:</div><div><i>0.063^2∙0.785 = 0.003116</i></div><div>Объем вытеснения при замещении на 300 м выше IRDV:</div><div><i>4177-300 = 3877</i></div><div><i>3877∙0.003115 = 12.08</i></div><div><i>0.5∙0.55 = 0.275</i></div>",
-        "<div></div><div></div><div></div><div></div><div></div><div></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Volume calculations Khazri-2 zone 4</div><div><b><i>Liner_ID = 0.1524</i></b></div><div><b><i>Casing1_ID = 0.2262</i></b></div><div><b><i>Casing2_ID = 0.2168</i></b></div><div><b><i>Casing3_ID = 0.219</i></b></div><div><b><i>Packer_depth = 4778</i></b></div><div><b><i>Tubing_OD = 0.0889</i></b></div><div><b><i>Tubing_ID = 0.063</i></b></div><div><b><i>Well_volume = 0.785∙(Casing1_ID^2∙1098.19+Casing2_ID^2∙(3143.26-1098.19)+Casing3_ID^2∙(4221.24-3143.26)+Liner_ID^2∙(Packer_depth-4221.24))</i></b></div><div><i>Well_volume = 170.3</i></div><div><b><i>Annulus_volume = Well_volume-0.785∙Tubing_OD^2∙Packer_depth</i></b></div><div><i>Annulus_volume = 140.7</i></div><div><b><i>Tubing_volume = 0.785∙Tubing_ID^2∙Packer_depth</i></b></div><div><i>Tubing_volume = 14.89</i></div><div><br></div>",
-        "<div></div><div><b><i>a = 6+9</i></b></div>",
-        "<div></div><div><i>2+3+4 = 9</i></div>",
-        "<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Volume calculations Khazri-2 zone 4</div><div><b><i>Liner_ID = 0.154</i></b> | mm</div><div><b><i>Liner_ID*2 = 0.308</i></b> | mm</div><div><i>My simple text</i></div><div>sjdcksdnknk</div><div><b><i>Casing1_ID = 0.2262</i></b> | mm</div><div><b><i>Casing2_ID = 0.2168</i></b> | mm</div><div><b><i>Casing3_ID = 0.219</i></b> | mm</div><div><b><i>Packer_depth = 4778</i></b> | m</div><div><b><i>Tubing_OD = 0.0889</i></b> |&nbsp; mm</div><div><b><i>Tubing_ID = 0.063</i></b> |&nbsp; &nbsp; mm</div><div><br></div><div><b><i>Well_volume = 0.785∙(Casing1_ID^2∙1098.19+Casing2_ID^2∙(3143.26-1098.19)+Casing3_ID^2∙(4221.24-3143.26)+Liner_ID^2∙(Packer_depth-4221.24))</i></b> |&nbsp; &nbsp; some comments here</div><div><br></div><div><i>Well_volume = 170.5</i> | m3</div><div><br></div><div><b><i>Annulus_volume = Well_volume-0.785∙Tubing_OD^2∙Packer_depth</i></b></div><div><br></div><div><i>Annulus_volume = 140.9</i> | any comments here</div><div><b><i>Tubing_volume = 0.785∙Tubing_ID^2∙Packer_depth</i></b></div><div><i>Tubing_volume = 14.89</i></div><div><br></div>"
-    ]
-};
-//localStorage.setItem(RegiList, 'Test 1')
-//localStorage.setItem('Test 1', JSON.stringify(testdata_1))
 //Execution
 var regiFiles = localStorage.getItem(regiList);
 if (!regiFiles || regiFiles == null) {
@@ -294,27 +248,3 @@ saveBtn.addEventListener('click', save);
 boldBtn.addEventListener('click', makeBold);
 deleteBtn.addEventListener('click', deleteFile);
 selectFile.addEventListener('change', loadFile);
-//Test execution - uncomment this section for testing
-// newFilename['value'] = selectFile['value'] = 'Test 1';
-// for (let key in testdata_1.versions) {
-//     textElement.innerHTML = testdata_1.versions[key];
-//     calculate()
-//     textElement.innerHTML === testResult_1.versions[key] ? console.log("Passed"): console.log(`Test #${1+(+key)} Failed. Result: ${textElement.innerHTML}`);
-// }
-// for (let key in testdata_2.versions) {
-//     textElement.innerHTML = testdata_2.versions[key];
-//     calculate()
-//     textElement.innerHTML === testResult_2.versions[key] ? console.log("Passed"): console.log(`Test #${1+(+key)} Failed. Result: ${textElement.innerHTML}`);
-// }
-//Development plan
-// add automatic testing+
-// add option for comments on the same line +
-// add function for cleaning tags through regExp pattern+
-// add bootstrap+
-// add undo and redo features +
-// make saving to localstorage through JSON format. +
-//improve security by removing all <>
-// add menu with greek and special symbols
-// add html Math representation
-//get rid of empty div in the beggining+
-// connect to firebase+
